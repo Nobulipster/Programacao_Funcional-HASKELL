@@ -1,0 +1,74 @@
+-- Questão 1
+unica_ocorrencia :: Eq a => a -> [a] -> Bool
+unica_ocorrencia x xs = conta x xs == 1
+  where
+    conta _ [] = 0
+    conta y (z:zs)
+      | y == z    = 1 + conta y zs
+      | otherwise = conta y zs
+
+
+-- Questão 3
+gera_sequencia :: Int -> [Int]
+gera_sequencia n = gera_sequencia' [ [x, -x] | x <- [1..n]]
+    where
+        gera_sequencia' :: [[Int]] -> [Int]
+        gera_sequencia' l = acumEsq (++) [] l
+
+acumEsq :: (b -> a -> b) -> b -> [a] -> b
+acumEsq func ac l@(c:r) = acumEsq func (func ac c) r
+acumEsq func ac []      = ac
+
+
+-- Questão 5
+somatorio :: Real t => [t] -> t
+somatorio l = acumEsq (+) 0 l
+
+
+-- Questão 7
+ordenada :: Ord a => [a] -> Bool
+ordenada []       = True
+ordenada [_]      = True
+ordenada (x:y:zs)
+  | x <= y    = ordenada (y:zs)
+  | otherwise = False
+
+
+-- Questão 9
+todas_maiusculas :: String -> String
+todas_maiusculas (c:cs)
+  | ehMinuscula c = paraMaiuscula c : todas_maiusculas cs
+  | otherwise     = c : todas_maiusculas cs
+  where
+    ehMinuscula ch = ch >= 'a' && ch <= 'z'
+    paraMaiuscula ch = toEnum (fromEnum ch - 32) :: Char
+todas_maiusculas [] = []
+
+
+-- Função Auxiliar da Questão 11
+inverte :: [t] -> [t]
+inverte (c:r)
+    | not (null r) = inverte r ++ [c]
+    | otherwise    = [c]
+inverte [] = []
+
+-- Questão 11
+separa :: [Int] -> [[Int]]
+separa xs = separaAux xs []
+separa [] = [[]]
+
+separaAux :: [Int] -> [Int] -> [[Int]]
+separaAux [] acc = [inverte acc]
+separaAux (x:xs) acc
+  | x == 0    = inverte acc : separaAux xs []
+  | otherwise = separaAux xs (x:acc)
+
+-- Questão 13
+ehQuadradoPerfeito :: Int -> Bool
+ehQuadradoPerfeito n = verifica 1
+  where
+    verifica i
+      | i * i == n = True
+      | i * i > n  = False
+      | otherwise  = verifica (i + 1)
+
